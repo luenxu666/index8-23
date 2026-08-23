@@ -1,0 +1,388 @@
+---
+title: "Interactive Plotly Presentation"
+author: "Enxu Lu"
+date: "8/23/2026"
+output:
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+    transition: 0.5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+## Document Creation Date
+
+**Created on:** 8/23/2026
+
+---
+
+## Introduction
+
+This presentation demonstrates interactive plots created with **Plotly** in R Markdown.
+
+Plotly is a JavaScript library that creates interactive, web-based visualizations.
+
+### Key Features
+
+- Interactive zoom and pan
+- Hover tooltips for data details
+- Dynamic resizing
+- Export to PNG/SVG
+
+---
+
+## Interactive Scatter Plot
+
+```{r plotly-scatter}
+library(plotly)
+library(ggplot2)
+
+# Create sample data
+set.seed(123)
+data <- data.frame(
+    x = rnorm(100, mean = 50, sd = 15),
+    y = rnorm(100, mean = 60, sd = 12),
+    category = sample(c("Group A", "Group B", "Group C"), 100, replace = TRUE)
+)
+
+# Create interactive scatter plot
+plot_ly(
+    data = data,
+    x = ~x,
+    y = ~y,
+    color = ~category,
+    type = 'scatter',
+    mode = 'markers',
+    marker = list(size = 12),
+    text = ~paste("X:", round(x, 2), "<br>Y:", round(y, 2)),
+    hoverinfo = 'text'
+) %>%
+    layout(
+        title = "Interactive Scatter Plot",
+        xaxis = list(title = "X Variable"),
+        yaxis = list(title = "Y Variable")
+    )
+```
+
+---
+
+## Interactive 3D Scatter Plot
+
+```{r plotly-3d}
+# 3D scatter plot
+set.seed(456)
+data3d <- data.frame(
+    x = rnorm(80, mean = 0, sd = 1),
+    y = rnorm(80, mean = 0, sd = 1),
+    z = rnorm(80, mean = 0, sd = 1),
+    cluster = sample(c("Cluster 1", "Cluster 2", "Cluster 3"), 80, replace = TRUE)
+)
+
+plot_ly(
+    data = data3d,
+    x = ~x,
+    y = ~y,
+    z = ~z,
+    color = ~cluster,
+    type = 'scatter3d',
+    mode = 'markers',
+    marker = list(size = 8)
+) %>%
+    layout(
+        title = "3D Scatter Plot",
+        scene = list(
+            xaxis = list(title = "X"),
+            yaxis = list(title = "Y"),
+            zaxis = list(title = "Z")
+        )
+    )
+```
+
+---
+
+## Interactive Line Chart
+
+```{r plotly-line}
+# Time series data
+time_data <- data.frame(
+    date = seq.Date(as.Date("2023-01-01"), as.Date("2023-12-31"), by = "month"),
+    sales = c(120, 135, 140, 155, 160, 175, 190, 185, 200, 210, 195, 220),
+    expenses = c(80, 85, 90, 95, 100, 110, 115, 120, 125, 130, 135, 140)
+)
+
+plot_ly() %>%
+    add_trace(
+        data = time_data,
+        x = ~date,
+        y = ~sales,
+        name = 'Sales',
+        type = 'scatter',
+        mode = 'lines+markers',
+        line = list(width = 3),
+        marker = list(size = 8)
+    ) %>%
+    add_trace(
+        data = time_data,
+        x = ~date,
+        y = ~expenses,
+        name = 'Expenses',
+        type = 'scatter',
+        mode = 'lines+markers',
+        line = list(width = 3, dash = 'dash'),
+        marker = list(size = 8)
+    ) %>%
+    layout(
+        title = "Monthly Sales and Expenses",
+        xaxis = list(title = "Date"),
+        yaxis = list(title = "Amount ($)")
+    )
+```
+
+---
+
+## Interactive Bar Chart
+
+```{r plotly-bar}
+# Bar chart data
+bar_data <- data.frame(
+    city = c("New York", "London", "Tokyo", "Paris", "Sydney", "Berlin"),
+    population = c(8419000, 8982000, 13960000, 11060000, 5312000, 3645000)
+)
+
+plot_ly(
+    data = bar_data,
+    x = ~city,
+    y = ~population,
+    type = 'bar',
+    color = ~city,
+    text = ~paste("Population:", format(population, big.mark = ",")),
+    hoverinfo = 'text'
+) %>%
+    layout(
+        title = "City Populations",
+        xaxis = list(title = "City"),
+        yaxis = list(title = "Population")
+    )
+```
+
+---
+
+## Interactive Histogram
+
+```{r plotly-histogram}
+# Histogram with normal curve overlay
+hist_data <- rnorm(1000, mean = 70, sd = 10)
+
+plot_ly(
+    x = ~hist_data,
+    type = 'histogram',
+    nbinsx = 30,
+    marker = list(
+        color = 'rgba(100, 200, 255, 0.6)',
+        line = list(color = 'rgba(0, 0, 0, 0.3)', width = 1)
+    )
+) %>%
+    layout(
+        title = "Distribution of Values",
+        xaxis = list(title = "Value"),
+        yaxis = list(title = "Frequency")
+    )
+```
+
+---
+
+## Interactive Heatmap
+
+```{r plotly-heatmap}
+# Correlation matrix heatmap
+set.seed(789)
+corr_data <- matrix(runif(25, -1, 1), nrow = 5)
+diag(corr_data) <- 1
+colnames(corr_data) <- rownames(corr_data) <- c("A", "B", "C", "D", "E")
+
+plot_ly(
+    z = corr_data,
+    x = colnames(corr_data),
+    y = rownames(corr_data),
+    type = 'heatmap',
+    colorscale = 'RdBu',
+    reversescale = TRUE,
+    hovertemplate = 'x: %{x}<br>y: %{y}<br>correlation: %{z:.2f}<extra></extra>'
+) %>%
+    layout(
+        title = "Correlation Matrix",
+        xaxis = list(title = ""),
+        yaxis = list(title = "")
+    )
+```
+
+---
+
+## Interactive Box Plot
+
+```{r plotly-boxplot}
+# Boxplot by category
+set.seed(101)
+box_data <- data.frame(
+    value = c(rnorm(50, 100, 15), rnorm(50, 120, 20), rnorm(50, 90, 10)),
+    group = rep(c("Group 1", "Group 2", "Group 3"), each = 50)
+)
+
+plot_ly(
+    data = box_data,
+    x = ~group,
+    y = ~value,
+    type = 'box',
+    color = ~group,
+    boxpoints = 'all',
+    jitter = 0.3,
+    pointpos = -1.8
+) %>%
+    layout(
+        title = "Box Plot by Group",
+        xaxis = list(title = "Group"),
+        yaxis = list(title = "Value")
+    )
+```
+
+---
+
+## Interactive Pie Chart
+
+```{r plotly-pie}
+# Pie chart
+pie_data <- data.frame(
+    category = c("Category A", "Category B", "Category C", "Category D"),
+    value = c(35, 25, 20, 20)
+)
+
+plot_ly(
+    data = pie_data,
+    labels = ~category,
+    values = ~value,
+    type = 'pie',
+    textinfo = 'label+percent',
+    hoverinfo = 'label+value',
+    marker = list(
+        colors = c('rgba(255, 99, 132, 0.8)',
+                   'rgba(54, 162, 235, 0.8)',
+                   'rgba(255, 206, 86, 0.8)',
+                   'rgba(75, 192, 192, 0.8)')
+    )
+) %>%
+    layout(
+        title = "Category Distribution"
+    )
+```
+
+---
+
+## Interactive Density Plot
+
+```{r plotly-density}
+# Density plot with multiple groups
+set.seed(202)
+density_data <- data.frame(
+    value = c(rnorm(200, 50, 10), rnorm(200, 70, 12), rnorm(200, 60, 8)),
+    group = rep(c("Group A", "Group B", "Group C"), each = 200)
+)
+
+plot_ly(
+    data = density_data,
+    x = ~value,
+    color = ~group,
+    type = 'histogram',
+    histnorm = 'probability density',
+    nbinsx = 30,
+    opacity = 0.6
+) %>%
+    layout(
+        title = "Density Plot by Group",
+        xaxis = list(title = "Value"),
+        yaxis = list(title = "Density"),
+        barmode = 'overlay'
+    )
+```
+
+---
+
+## Interactive Map with Plotly
+
+```{r plotly-map}
+# Map with Plotly (scattergeo)
+map_data <- data.frame(
+    city = c("New York", "London", "Tokyo", "Sydney", "Paris", "Moscow"),
+    lat = c(40.712, 51.507, 35.689, -33.868, 48.857, 55.755),
+    lon = c(-74.006, -0.127, 139.692, 151.209, 2.352, 37.618),
+    population = c(8419000, 8982000, 13960000, 5312000, 11060000, 11920000)
+)
+
+plot_ly(
+    data = map_data,
+    lat = ~lat,
+    lon = ~lon,
+    type = 'scattergeo',
+    mode = 'markers',
+    marker = list(
+        size = ~sqrt(population / 1000000) * 5,
+        color = 'red',
+        opacity = 0.8
+    ),
+    text = ~paste(
+        city, "<br>",
+        "Population:", format(population, big.mark = ",")
+    ),
+    hoverinfo = 'text'
+) %>%
+    layout(
+        title = "Major Cities Map",
+        geo = list(
+            projection = list(type = 'orthographic'),
+            showland = TRUE,
+            landcolor = 'rgb(200, 200, 200)',
+            countrycolor = 'rgb(150, 150, 150)'
+        )
+    )
+```
+
+---
+
+## Summary
+
+### Plotly Features Used
+
+| Plot Type | Function | Interaction |
+|-----------|----------|-------------|
+| Scatter | `plot_ly(type = 'scatter')` | Zoom, hover, drag |
+| 3D Scatter | `plot_ly(type = 'scatter3d')` | Rotate, zoom, hover |
+| Line | `plot_ly(type = 'scatter', mode = 'lines')` | Hover, zoom |
+| Bar | `plot_ly(type = 'bar')` | Hover |
+| Histogram | `plot_ly(type = 'histogram')` | Hover |
+| Heatmap | `plot_ly(type = 'heatmap')` | Hover |
+| Boxplot | `plot_ly(type = 'box')` | Hover, zoom |
+| Pie | `plot_ly(type = 'pie')` | Hover |
+| Density | `plot_ly(type = 'histogram', histnorm = 'probability density')` | Hover |
+| Map | `plot_ly(type = 'scattergeo')` | Zoom, rotate, hover |
+
+---
+
+## About This Document
+
+| Item | Information |
+|------|-------------|
+| **Created on** | 8/23/2026 |
+| **Author** | Enxu Lu |
+| **Purpose** | Peer-graded assignment for Coursera |
+| **Tools Used** | R Markdown, Plotly, GitHub Pages |
+| **R Packages** | plotly, ggplot2 |
+
+---
+
+## References
+
+1. Plotly for R: https://plotly.com/r/
+2. R Markdown: https://rmarkdown.rstudio.com/
+3. GitHub Pages: https://pages.github.com/
